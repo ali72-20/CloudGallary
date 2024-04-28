@@ -4,8 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item android:id="@+id/logout_tv"
+    <item
+        android:id="@+id/logout_menu"
         android:title="logout"
         android:icon="@drawable/logout"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        />
 </menu>
