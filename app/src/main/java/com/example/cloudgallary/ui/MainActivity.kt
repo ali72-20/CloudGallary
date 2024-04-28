@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.cloudgallary.Constants
 import com.example.cloudgallary.R
 import com.example.cloudgallary.databinding.ActivityMainBinding
@@ -32,9 +33,25 @@ class MainActivity : AppCompatActivity() {
         addPhoto()
         id = intent.getStringExtra(Constants.PhoneNumber)?:""
         viewBinding.homeContent.userId.text = id
-//        initViews()
+        initViews()
         addPhoto()
+        logout()
+    }
 
+    private fun logout() {
+        viewBinding.homeContent.toolBar.setOnMenuItemClickListener {
+            val builder : AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Logout").setMessage("Are you sure to logout").setPositiveButton("Logout") { dialog, which ->
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton("Close"){dialog,which->
+                   
+             }
+            builder.create()
+            builder.show()
+            true
+        }
     }
 
     private fun addPhoto() {
@@ -47,31 +64,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val menuInflater : MenuInflater = menuInflater
-//        menuInflater.inflate(R.menu.drop_list,menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if(item.itemId == R.id.logout_tv){
-//            val bulider : AlertDialog.Builder = AlertDialog.Builder(this)
-//            bulider.setTitle("Logout").setMessage("Are you sure to logout").setPositiveButton("Logout"){dialog,which->
-//                val intent = Intent(this,LoginActivity::class.java)
-//                startActivity(intent)
-//            }
-//            bulider.create()
-//            bulider.show()
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
     private fun initViews() {
         photoList = arrayListOf()
         adapter = PhotoRecyclerViewAdapter(photoList)
         viewBinding.recManager.adapter = adapter
     }
-
-
-
 }
