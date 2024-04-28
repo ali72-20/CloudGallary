@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/Splace_bg"
+        android:padding="8dp"
+        tools:ignore="MissingConstraints">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sora"
+                android:textSize="32sp"
+                android:fontFamily="@font/poppinsbold"
+                android:textColor="@color/white"
+                />
+            <TextView
+                android:id="@+id/user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="11111111111"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppinsbold"
+                android:textSize="16sp"
+                android:layout_marginStart="160dp"
+                />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/extended_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="@color/bottonColor"
+        android:contentDescription="@string/add_new_photo"
+        android:elevation="16dp"
+        android:fontFamily="@font/poppinsbold"
+        android:text="@string/add_new_photo"
+        android:textColor="@color/white"
+        app:elevation="16dp"
+        app:extendStrategy="wrap_content"
+        app:icon="@drawable/add"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:showMotionSpec="@android:anim/fade_out" />
+</androidx.constraintlayout.widget.ConstraintLayout>

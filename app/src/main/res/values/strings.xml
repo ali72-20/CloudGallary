@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">CloudGallary</string>
+    <string name="welcome_to_sora">Welcome to Sora</string>
+    <string name="login_to_continue">Login to Continue</string>
+    <string name="enter_id">Enter ID</string>
+    <string name="sign_in">Sign In</string>
+    <string name="don_t_have_account_click">Don\'t have account? Click</string>
+    <string name="register">Register</string>
+    <string name="create_id">Create ID</string>
+    <string name="sora">Sora</string>
+    <string name="add_new_photo">Add new photo</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="create_new_account">Create new Account</string>
+    <string name="user_name">User Name</string>
+    <string name="upload">Upload</string>
+    <string name="logout">Logout</string>
+</resources>
