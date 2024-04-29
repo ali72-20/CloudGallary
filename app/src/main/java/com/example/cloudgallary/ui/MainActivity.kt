@@ -1,23 +1,18 @@
 package com.example.cloudgallary.ui
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.ImageView
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.cloudgallary.Constants
-import com.example.cloudgallary.R
+import com.example.cloudgallary.ImageModel
 import com.example.cloudgallary.databinding.ActivityMainBinding
 import com.example.cloudgallary.ui.Adapters.PhotoRecyclerViewAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
-import java.util.zip.Inflater
 
 class MainActivity : AppCompatActivity() {
     lateinit var viewBinding : ActivityMainBinding
@@ -25,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     var curFile: Uri? = null
     val imageRef = Firebase.storage.reference
     lateinit var adapter: PhotoRecyclerViewAdapter
-    lateinit var photoList :ArrayList<ImageView>
+    lateinit var photoList :ArrayList<ImageModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,9 +29,15 @@ class MainActivity : AppCompatActivity() {
         id = intent.getStringExtra(Constants.PhoneNumber)?:""
         viewBinding.homeContent.userId.text = id
         initViews()
+//        downloadImages()
         addPhoto()
         logout()
     }
+
+//    private fun downloadImages() {
+//        imageRef.child("$id/")
+//        imageRef.ad
+//    }
 
     private fun logout() {
         viewBinding.homeContent.toolBar.setOnMenuItemClickListener {
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         photoList = arrayListOf()
-        adapter = PhotoRecyclerViewAdapter(photoList)
+        adapter = PhotoRecyclerViewAdapter(photoList,this)
         viewBinding.recManager.adapter = adapter
     }
 }

@@ -12,8 +12,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toDrawable
+import com.example.cloudgallary.R
 import com.example.cloudgallary.databinding.FragmentAddImageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.text.SimpleDateFormat
@@ -22,11 +26,12 @@ import java.util.Locale
 
 
 class AddImageFragment :BottomSheetDialogFragment() {
-    lateinit var imgeuri : Uri
+   var imgeuri : Uri?= null
     lateinit var viewBinding: FragmentAddImageBinding
     lateinit var id : String
     val REQUEST_CODE = 1
     var cnt :Int = 0
+    var dbRef = FirebaseDatabase.getInstance().getReference("Image")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +40,7 @@ class AddImageFragment :BottomSheetDialogFragment() {
         viewBinding = FragmentAddImageBinding.inflate(inflater,container,false)
         val data = arguments
         id = data!!.getString("ID").toString()
+        viewBinding.upload.text = "Upload"
         return viewBinding.root
     }
 
@@ -61,18 +67,23 @@ class AddImageFragment :BottomSheetDialogFragment() {
             startActivityForResult(intent, 100)
         }
         viewBinding.upload.setOnClickListener {
-
             uploadPhoto()
         }
     }
 
     private fun uploadPhoto() {
-       Log.e("folderName",id)
+        if(imgeuri == null){
+            Snackbar.make(viewBinding.upload,"Uploaded failed!! Please select a photo!",Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        viewBinding.upload.text = null
+        viewBinding.upload.background = R.color.white.toDrawable()
+        viewBinding.uploadProg.visibility = View.VISIBLE
+        Log.e("folderName",id)
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
-        cnt++
-        val file = storageRef.child("$id/Images$cnt")
-        file.putFile(imgeuri).addOnSuccessListener {
+        val file = storageRef.child(id).child((imgeuri!!.lastPathSegment.toString()))
+        file.putFile(imgeuri!!).addOnSuccessListener {
             Toast.makeText(requireContext(),"Uploaded Success",Toast.LENGTH_SHORT).show()
             dismiss()
         }
