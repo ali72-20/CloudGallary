@@ -3,6 +3,8 @@ package com.example.cloudgallary.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.cloudgallary.Constants
@@ -20,10 +22,12 @@ import com.google.firebase.storage.storage
 
 class RegisterActivity : AppCompatActivity() {
     lateinit var viewBinding : ActivityRegisterBinding
+    lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        progressBar = viewBinding.registerProgbar
         setSupportActionBar(viewBinding.toolBar)
         initView()
         Register()
@@ -76,11 +80,13 @@ class RegisterActivity : AppCompatActivity() {
         }else{
             viewBinding.NameDil.error  = null
         }
+        progressBar.visibility = View.VISIBLE
         val db = FirebaseDatabase.getInstance().getReference(Constants.FireBasePath)
         db.child(viewBinding.inputFaild.text.toString()).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    progressBar.visibility = View.INVISIBLE
                     // user exists in the database
                     val bulider: AlertDialog.Builder = AlertDialog.Builder(this@RegisterActivity)
                     bulider.setTitle("User Already Exists").setMessage("You can LogIn")
@@ -88,6 +94,9 @@ class RegisterActivity : AppCompatActivity() {
                                 "LogIn"){dialog,which->
                             val intent = Intent(this@RegisterActivity,LoginActivity::class.java)
                             startActivity(intent)
+                        }
+                        .setNegativeButton("Close"){dialig,which->
+                            dialig.dismiss()
                         }
                     val dialog : AlertDialog = bulider.create()
                     dialog.show()
