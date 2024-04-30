@@ -1,43 +1,69 @@
 package com.example.cloudgallary.ui
 
-import android.content.Context
+
 import android.content.Intent
-import android.net.Uri
+
 import android.os.Bundle
-import android.widget.ImageView
+
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.cloudgallary.Constants
-import com.example.cloudgallary.ImageModel
+
 import com.example.cloudgallary.databinding.ActivityMainBinding
 import com.example.cloudgallary.ui.Adapters.PhotoRecyclerViewAdapter
-import com.google.firebase.Firebase
-import com.google.firebase.storage.storage
+
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class MainActivity : AppCompatActivity() {
     lateinit var viewBinding : ActivityMainBinding
+    lateinit var recView : RecyclerView
     lateinit var id : String
-    var curFile: Uri? = null
-    val imageRef = Firebase.storage.reference
-    lateinit var adapter: PhotoRecyclerViewAdapter
-    lateinit var photoList :ArrayList<ImageModel>
+    lateinit var dbRef : DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
-        addPhoto()
         id = intent.getStringExtra(Constants.PhoneNumber)?:""
         viewBinding.homeContent.userId.text = id
-        initViews()
-//        downloadImages()
+        retrieveImages()
         addPhoto()
         logout()
     }
 
-//    private fun downloadImages() {
-//        imageRef.child("$id/")
-//        imageRef.ad
-//    }
+    private fun retrieveImages() {
+        recView = viewBinding.recManager
+        recView.layoutManager = LinearLayoutManager(this)
+        dbRef = FirebaseDatabase.getInstance().getReference("Images").child(id)
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val newList : MutableList<ImageDetails> = mutableListOf()
+                    for (dataSnapShot in snapshot.children) {
+                        val image = dataSnapShot.getValue(ImageDetails::class.java)
+                        newList.add(image!!)
+                    }
+                    recView.adapter = PhotoRecyclerViewAdapter(newList, this@MainActivity)
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+
+
+
 
     private fun logout() {
         viewBinding.homeContent.toolBar.setOnMenuItemClickListener {
@@ -47,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             .setNegativeButton("Close"){dialog,which->
-                   
+
              }
             builder.create()
             builder.show()
@@ -63,11 +89,5 @@ class MainActivity : AppCompatActivity() {
             addImageFragment.arguments = bundle
             addImageFragment.show(supportFragmentManager,null)
         }
-    }
-
-    private fun initViews() {
-        photoList = arrayListOf()
-        adapter = PhotoRecyclerViewAdapter(photoList,this)
-        viewBinding.recManager.adapter = adapter
     }
 }

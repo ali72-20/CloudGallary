@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toDrawable
+import com.bumptech.glide.Glide
 import com.example.cloudgallary.R
 import com.example.cloudgallary.databinding.FragmentAddImageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -31,7 +32,7 @@ class AddImageFragment :BottomSheetDialogFragment() {
     lateinit var id : String
     val REQUEST_CODE = 1
     var cnt :Int = 0
-    var dbRef = FirebaseDatabase.getInstance().getReference("Image")
+    var dbRef = FirebaseDatabase.getInstance().getReference("Images")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,6 +42,7 @@ class AddImageFragment :BottomSheetDialogFragment() {
         val data = arguments
         id = data!!.getString("ID").toString()
         viewBinding.upload.text = "Upload"
+        dbRef.push().key!!
         return viewBinding.root
     }
 
@@ -82,14 +84,27 @@ class AddImageFragment :BottomSheetDialogFragment() {
         Log.e("folderName",id)
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference
-        val file = storageRef.child(id).child((imgeuri!!.lastPathSegment.toString()))
+        val fileName = imgeuri!!.lastPathSegment.toString()
+        val file = storageRef.child(id).child((fileName))
         file.putFile(imgeuri!!).addOnSuccessListener {
+            it.storage.downloadUrl.addOnSuccessListener {
+                val imageUrl = it.toString()
+                dbRef.child(id).push().child("userImage").setValue(imageUrl).addOnCompleteListener {
+
+                }
+            }
             Toast.makeText(requireContext(),"Uploaded Success",Toast.LENGTH_SHORT).show()
+            onCompleteUpload?.let {
+                it.onComplete()
+            }
             dismiss()
         }
     }
 
-
+     var onCompleteUpload : OnCompleteUpload?=null
+   fun interface OnCompleteUpload{
+       fun onComplete()
+   }
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
