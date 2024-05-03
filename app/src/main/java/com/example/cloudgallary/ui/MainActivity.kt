@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                         val image = dataSnapShot.getValue(ImageDetails::class.java)
                         newList.add(image!!)
                     }
+                    newList.reverse()
                     recView.adapter = PhotoRecyclerViewAdapter(newList, this@MainActivity)
 
                 }
